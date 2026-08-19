@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from django.db import models
 
 
@@ -8,6 +9,20 @@ class Habit(models.Model):
 
     def __str__(self):
         return self.name
+
+    def current_streak(self):
+        logged_dates = set(self.logs.values_list('completed_date', flat=True))
+        streak = 0
+        day = date.today()
+        while day in logged_dates:
+            streak += 1
+            day -= timedelta(days=1)
+        return streak
+
+    def completion_rate(self):
+        days_tracked = (date.today() - self.created_at.date()).days + 1
+        completed_days = self.logs.count()
+        return round((completed_days / days_tracked) * 100, 1)
 
 
 class HabitLog(models.Model):

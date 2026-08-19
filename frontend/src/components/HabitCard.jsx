@@ -1,9 +1,10 @@
 import { API_URL } from '../config'
-import { getToday } from '../utils/date'
+import { getToday, getLastNDays } from '../utils/date'
 
 function HabitCard({ habit, onHabitChanged }) {
   const today = getToday()
   const isCheckedToday = habit.logs.some((log) => log.completed_date === today)
+  const last7Days = getLastNDays(7)
 
   const handleToggle = () => {
     fetch(`${API_URL}/habits/${habit.id}/toggle/`, {
@@ -35,6 +36,24 @@ function HabitCard({ habit, onHabitChanged }) {
             Delete
           </button>
         </div>
+      </div>
+
+      <div className="mt-3 flex gap-4 text-sm text-gray-600">
+        <span>🔥 {habit.current_streak} day streak</span>
+        <span>{habit.completion_rate}% completion</span>
+      </div>
+
+      <div className="mt-3 flex gap-1">
+        {last7Days.map((day) => {
+          const isDone = habit.logs.some((log) => log.completed_date === day)
+          return (
+            <div
+              key={day}
+              title={day}
+              className={`h-4 w-4 rounded-sm ${isDone ? 'bg-green-500' : 'bg-gray-200'}`}
+            />
+          )
+        })}
       </div>
     </div>
   )
