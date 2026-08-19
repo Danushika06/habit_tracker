@@ -1,0 +1,12 @@
+# Python virtual environment
+backend/venv/
+
+# Python bytecode cache
+backend/**/__pycache__/
+
+# Environment variables / secrets
+.env
+backend/.env
+
+# Node dependencies
+frontend/node_modules/
