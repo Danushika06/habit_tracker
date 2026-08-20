@@ -6,6 +6,7 @@ function App() {
   const [habits, setHabits] = useState([])
   const [name, setName] = useState('')
   const [category, setCategory] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('All')
 
   const fetchHabits = () => {
     fetch(`${API_URL}/habits/`)
@@ -29,6 +30,12 @@ function App() {
       fetchHabits()
     })
   }
+
+  const categories = ['All', ...new Set(habits.map((habit) => habit.category))]
+  const filteredHabits =
+    selectedCategory === 'All'
+      ? habits
+      : habits.filter((habit) => habit.category === selectedCategory)
 
   return (
     <div className="mx-auto max-w-2xl p-6">
@@ -56,8 +63,20 @@ function App() {
         </button>
       </form>
 
+      <select
+        value={selectedCategory}
+        onChange={(event) => setSelectedCategory(event.target.value)}
+        className="mb-4 rounded border border-gray-300 px-3 py-2"
+      >
+        {categories.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {habits.map((habit) => (
+        {filteredHabits.map((habit) => (
           <HabitCard key={habit.id} habit={habit} onHabitChanged={fetchHabits} />
         ))}
       </div>
